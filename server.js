@@ -12,7 +12,7 @@ const topic = client.subscribeAsync('color');
 let color = "purple"
 let messageArrivedAt = DateTime.utc();
 
-const colors = ["red","green","blue"]
+const colors = ["red","green","blue","purple","cyan","white", "magenta"]
 
 client.on("message", (topic, message) => {
     //color = message.toString()
@@ -63,12 +63,12 @@ function getHexFromColor(color){
 
 app.get('/', (req, res) => {
 
-    const probabilityOfChange = Math.round((Math.random() * 2) + 1);
+    const probabilityOfChange = getRandomInt(1,4)
     console.log("probabilityOfChange: " + probabilityOfChange)
-    
+
     if (probabilityOfChange == 3){
 
-        const colorIndex = Math.round((Math.random() * 2 ) );
+        const colorIndex = getRandomInt(0,7)
     
         color = colors[colorIndex]
         messageArrivedAt = DateTime.utc();
@@ -87,3 +87,8 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
