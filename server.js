@@ -71,6 +71,9 @@ app.get('/', (req, res) => {
     
         color = colors[colorIndex]
         messageArrivedAt = DateTime.utc();
+
+        console.log("'new' color: " + color)
+        console.log("messageArrivedAt: " + messageArrivedAt)
     
     }
 
