@@ -1,0 +1,6 @@
+FROM node:23.5-bookworm-slim
+WORKDIR /server
+COPY package.json /server
+RUN npm install --production
+COPY . /server
+CMD ["node","server.js"]
