@@ -64,7 +64,8 @@ function getHexFromColor(color){
 app.get('/', (req, res) => {
 
     const probabilityOfChange = Math.round((Math.random() * 2) + 1);
-
+    console.log("probabilityOfChange: " + probabilityOfChange)
+    
     if (probabilityOfChange == 3){
 
         const colorIndex = Math.round((Math.random() * 2 ) );
@@ -73,6 +74,7 @@ app.get('/', (req, res) => {
         messageArrivedAt = DateTime.utc();
 
         console.log("'new' color: " + color)
+        console.log("'new' hex: " + getHexFromColor(color))
         console.log("messageArrivedAt: " + messageArrivedAt)
     
     }
