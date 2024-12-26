@@ -10,6 +10,8 @@ NUM_LEDS = 66
 # How long between cheerslight updates in seconds
 delay = 60
 
+synched = False
+
 # Check and import the SSID and Password from secrets.py
 try:
     from secrets import WIFI_SSID, WIFI_PASSWORD
@@ -61,38 +63,36 @@ def getNextFutureMinute(lastUpdate):
     
 
     now = time.localtime()
-    nowHour = now[3]
-    nowMinute = now[4]
-    nowSecond = now[5]
     secondsOfThisDay = now[0]*365*24*60*60 + now[1]*30*24*60*60 + now[2] * 24*60*60 + now[3]*60*60 + now[4]*60 + now[5]
-    print(secondsOfThisDay)
+
     lastUpdatedSeconds = int(lastUpdatedSplit[0])*365*24*60*60 + int(lastUpdatedSplit[1])*30*24*60*60 + int(lastUpdatedSplit[2]) * 24*60*60 + int(lastUpdatedSplit[3])*60*60 + int(lastUpdatedSplit[4])*60 + int(lastUpdatedSplit[5])
-    print(lastUpdatedSeconds)
+
     
-    delay = howManyMinutesTillOneMinuteAfterLastUpdate(secondsOfThisDay,lastUpdatedSeconds)
-    print("delay")
-    print(delay)
+    delay = syncToFixedDelay(secondsOfThisDay,lastUpdatedSeconds)
     return delay
 
-def howManyMinutesTillOneMinuteAfterLastUpdate(secondsOfThisDay,lastUpdatedSeconds):
-    foundTheFuture = False
-    while not foundTheFuture:
+def syncToFixedDelay(secondsOfThisDay,lastUpdatedSeconds):
+
+    global synched
+    while not synched:
         lastUpdatedSeconds = lastUpdatedSeconds + 60
         if (lastUpdatedSeconds > secondsOfThisDay):
-            foundTheFuture = True
-            return int(lastUpdatedSeconds - secondsOfThisDay)
+            global synched
+            synched = True
+            return int(lastUpdatedSeconds) - int(secondsOfThisDay)
+    return 60    
 
 while True:
     if wlan.isconnected():
         try:
             print("Getting new colour...")
-            req = requests.get("https://cheertree-express-server-0b0f376df1b2.herokuapp.com", timeout=None)
+            req = requests.get("https://cheertree-express-server-0b0f376df1b2.herokuapp.com", timeout=60)
             json = req.json()
             req.close()
             print("Success!")
 
             colour = tuple(int(json['hex'][i:i + 2], 16) for i in (1, 3, 5))
-            print(colour)
+            print(json['color'])
             lastUpdated = json['messageArrivedAt']
             delay = getNextFutureMinute(lastUpdated)
             for i in range(NUM_LEDS):
@@ -103,4 +103,5 @@ while True:
         print("Lost connection to network {}".format(WIFI_SSID))
 
     time.sleep(delay)
+
 

@@ -9,12 +9,14 @@ app.set('port',port);
 
 const topic = client.subscribeAsync('color');
 
-let color = ""
+let color = "purple"
 let messageArrivedAt = DateTime.utc();
 
+const colors = ["red","green","blue"]
+
 client.on("message", (topic, message) => {
-    color = message.toString()
-    messageArrivedAt = DateTime.utc();
+    //color = message.toString()
+    //messageArrivedAt = DateTime.utc();
 });
 
 function getHexFromColor(color){
@@ -60,11 +62,23 @@ function getHexFromColor(color){
 
 
 app.get('/', (req, res) => {
-  res.send({'color' : color, 'hex': getHexFromColor(color), 'messageArrivedAt' : messageArrivedAt})
+
+    const probabilityOfChange = Math.round((Math.random() * 2) + 1);
+
+    if (probabilityOfChange == 3){
+
+        const colorIndex = Math.round((Math.random() * 2 ) );
+    
+        color = colors[colorIndex]
+        messageArrivedAt = DateTime.utc();
+    
+    }
+
+
+    res.status(200).send({'color' : color, 'hex': getHexFromColor(color), 'messageArrivedAt' : messageArrivedAt})
 })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
 
