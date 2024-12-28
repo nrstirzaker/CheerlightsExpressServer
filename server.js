@@ -11,12 +11,11 @@ const topic = client.subscribeAsync('color');
 
 let color = "purple"
 let messageArrivedAt = DateTime.utc();
-
-const colors = ["red","green","blue","purple","cyan","white", "magenta"]
+//const colors = ["red","green","blue","purple","cyan","white", "magenta"]
 
 client.on("message", (topic, message) => {
-    //color = message.toString()
-    //messageArrivedAt = DateTime.utc();
+    color = message.toString()
+    messageArrivedAt = DateTime.utc();
 });
 
 function getHexFromColor(color){
@@ -63,29 +62,31 @@ function getHexFromColor(color){
 
 app.get('/', (req, res) => {
 
-    const probabilityOfChange = getRandomInt(1,4)
-    console.log("probabilityOfChange: " + probabilityOfChange)
-
-    if (probabilityOfChange == 3){
-
-        const colorIndex = getRandomInt(0,7)
-    
-        color = colors[colorIndex]
-        messageArrivedAt = DateTime.utc();
-
-        console.log("'new' color: " + color)
-        console.log("'new' hex: " + getHexFromColor(color))
-        console.log("messageArrivedAt: " + messageArrivedAt)
-    
-    }
-
-
+    //getRandomColor();
     res.status(200).send({'color' : color, 'hex': getHexFromColor(color), 'messageArrivedAt' : messageArrivedAt})
 })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+function getRandomColor() {
+    const probabilityOfChange = getRandomInt(1, 4);
+    console.log("probabilityOfChange: " + probabilityOfChange);
+
+    if (probabilityOfChange == 3) {
+
+        const colorIndex = getRandomInt(0, 7);
+
+        color = colors[colorIndex];
+        messageArrivedAt = DateTime.utc();
+
+        console.log("'new' color: " + color);
+        console.log("'new' hex: " + getHexFromColor(color));
+        console.log("messageArrivedAt: " + messageArrivedAt);
+
+    }
+}
 
 function getRandomInt(min, max) {
   const minCeiled = Math.ceil(min);
