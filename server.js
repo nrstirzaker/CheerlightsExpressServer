@@ -34,7 +34,7 @@ function getHexFromColor(color){
             hexValue = '#00FFFF';
             break;
         case "white":
-            hexValue = '#000000';
+            hexValue = '#FFFFFF';
             break;
         case "oldlace":
             hexValue = '#FDF5E6';
